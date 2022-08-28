@@ -31,7 +31,7 @@ class Runbot extends Command
         $discord->registerCommand('visualize', function (Message $message, array $params) {
             $prompt = implode(' ', $params);
 
-            $this->messageBus->dispatch(new VisualizeSymfonyMessage($prompt));
+            $this->messageBus->dispatch(new VisualizeSymfonyMessage($prompt, $message->id, $message->channel_id));
 
             return "I have enqueued visualization of prompt '$prompt'. Please wait...";
         }, [
