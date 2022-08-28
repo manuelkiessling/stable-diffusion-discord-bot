@@ -29,23 +29,29 @@ class VisualizeSymfonyMessageHandler
 
         $discord->on('ready', function (Discord $discord) use ($message) {
             $this->logger->info('Discord is ready.');
-            $discord->getChannel($message->getDiscordChannelId())
+            $promise = $discord->getChannel($message->getDiscordChannelId())
                 ->sendMessage(
                     MessageBuilder::new()->setContent("Starting visualization of prompt '{$message->getPrompt()}'. Please wait...")
                 );
 
+            $promise->then(function () use ($discord, $message) {
 
+                $outdirpath = 'stable-diffusion-result-' . sha1(rand(0, PHP_INT_MAX));
 
-            $promise = $discord->getChannel($message->getDiscordChannelId())
-                ->sendMessage(
-                    MessageBuilder::new()
-                        ->setContent("Here is the visualization of your prompt '{$message->getPrompt()}':")
-                        ->addFile('/Users/manuel/sd-outputs/txt2img-samples/samples/00005.png')
-                );
+                shell_exec("/usr/bin/env bash ~/discord-bot-backend/bin/visualize.sh \"{$message->getPrompt()}\" $outdirpath");
 
-            $promise->then(function () use ($discord) {
-                $this->logger->info('Message was sent, closing Discord.');
-                $discord->close();
+                $promise = $discord->getChannel($message->getDiscordChannelId())
+                    ->sendMessage(
+                        MessageBuilder::new()
+                            ->setContent("Here is the visualization of your prompt '{$message->getPrompt()}':")
+                            ->addFile("/var/tmp/$outdirpath/samples/00000.png")
+                    );
+
+                $promise->then(function () use ($discord) {
+                    $this->logger->info('Message was sent, closing Discord.');
+                    $discord->close();
+                });
+
             });
         });
 
