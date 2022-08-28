@@ -31,7 +31,7 @@ class VisualizeSymfonyMessageHandler
             $this->logger->info('Discord is ready.');
             $promise = $discord->getChannel($message->getDiscordChannelId())
                 ->sendMessage(
-                    MessageBuilder::new()->setContent("Starting visualization of prompt '{$message->getPrompt()}'. Please wait...")
+                    MessageBuilder::new()->setContent("Starting visualization of prompt '{$message->getPrompt()}'.\nThis will take a minute or two.")
                 );
 
             $promise->then(function () use ($discord, $message) {

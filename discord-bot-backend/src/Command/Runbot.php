@@ -35,7 +35,7 @@ class Runbot extends Command
 
         $discord->registerCommand('visualize', function (Message $message, array $params) {
             $prompt = implode(' ', $params);
-            $prompt = preg_replace("/[^A-Za-z0-9,.-: ]/", '', $prompt);
+            $prompt = preg_replace("/[^A-Za-z0-9,.\-: ]/", '', $prompt);
 
             $this->messageBus->dispatch(new VisualizeSymfonyMessage($prompt, $message->id, $message->channel_id));
 
@@ -48,8 +48,11 @@ class Runbot extends Command
             $resultSet = $stmt->executeQuery();
 
             $rows = $resultSet->fetchAllAssociative();
+            $numberOfTasks = $rows[0]['cnt'];
+            $waitMin = $numberOfTasks;
+            $waitMax = $numberOfTasks * 2;
 
-            return "I have enqueued visualization of prompt '$prompt'. There are currently {$rows[0]['cnt']} visualization tasks in the queue.";
+            return "I have enqueued visualization of prompt '$prompt'.\nThere are currently {$numberOfTasks} visualization tasks in the queue.\nExpect between $waitMin and $waitMax minutes for your visualization to be finished.";
         }, [
             'description' => 'Visualize the given prompt using Stable Diffusion.',
         ]);
