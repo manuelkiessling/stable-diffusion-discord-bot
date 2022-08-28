@@ -39,7 +39,7 @@ class VisualizeSymfonyMessageHandler
             $promise = $discord->getChannel($message->getDiscordChannelId())
                 ->sendMessage(
                     MessageBuilder::new()
-                        ->setContent("Finished visualization of prompt '{$message->getPrompt()}'.")
+                        ->setContent("Here is the visualization of your prompt '{$message->getPrompt()}':")
                         ->addFile('/Users/manuel/sd-outputs/txt2img-samples/samples/00005.png')
                 );
 

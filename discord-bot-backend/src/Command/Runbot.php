@@ -33,7 +33,7 @@ class Runbot extends Command
 
             $this->messageBus->dispatch(new VisualizeSymfonyMessage($prompt, $message->id, $message->channel_id));
 
-            return "I have enqueued visualization of prompt '$prompt'. Please wait...";
+            return "I have enqueued visualization of prompt '$prompt'.";
         }, [
             'description' => 'Visualize the given prompt using Stable Diffusion.',
         ]);
