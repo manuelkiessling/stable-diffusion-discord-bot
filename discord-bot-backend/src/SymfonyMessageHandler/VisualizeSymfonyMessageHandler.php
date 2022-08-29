@@ -25,7 +25,7 @@ class VisualizeSymfonyMessageHandler
 
         $outdirpath = 'stable-diffusion-result-' . sha1(rand(0, PHP_INT_MAX));
 
-        shell_exec("/usr/bin/env bash ~/discord-bot-backend/bin/visualize.sh \"{$symfonyMessage->getPrompt()}\" $outdirpath");
+        shell_exec("/usr/bin/env bash ~/discord-bot-backend/bin/visualize.sh \"{$symfonyMessage->getPrompt()}\" {$symfonyMessage->getSeed()} $outdirpath");
 
         $discord = new Discord([
             'token' => 'MTAxMzM3MzA0MzYyNTcwNTUxMw.Gy5jK6.ApVUkSGi9Y51z3cne5BV-sgLOoXuSFpb388FY0',

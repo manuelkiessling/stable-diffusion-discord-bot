@@ -5,8 +5,6 @@ namespace App\Command;
 use App\SymfonyMessage\VisualizeSymfonyMessage;
 use Discord\Builders\MessageBuilder;
 use Discord\Discord;
-use Discord\DiscordCommandClient;
-use Discord\Parts\Channel\Message;
 use Discord\Parts\Embed\Embed;
 use Discord\Parts\Embed\Footer;
 use Discord\Parts\Interactions\Command\Command as DiscordCommand;
@@ -55,7 +53,16 @@ class Runbot extends Command
                             'required' => true,
                             'min_length' => 10,
                             'max_length' => 500
-                        ]
+                        ],
+                        [
+                            'name' => 'seed',
+                            'description' => 'The seed to use when generating the image. Defaults to 42.',
+                            'type' => Option::INTEGER,
+                            'required' => false,
+                            'min_value' => 0,
+                            'max_value' => 999999999
+                        ],
+
                     ],
                 ]
             );
@@ -70,7 +77,6 @@ class Runbot extends Command
         $discord->run();
         */
 
-
         $discord->listenCommand('draw', function (Interaction $interaction) use ($discord) {
             print_r($interaction);
 
@@ -81,8 +87,17 @@ class Runbot extends Command
             );
             $prompt = trim($prompt);
 
+            if (   !array_key_exists('seed', $interaction->data->options->toArray())
+                || !array_key_exists('value', $interaction->data->options['seed'])
+            ) {
+                $seed = 42;
+            } else {
+                $seed = (int)$interaction->data->options['seed']['value'];
+            }
+
             $this->messageBus->dispatch(new VisualizeSymfonyMessage(
                 $prompt,
+                $seed,
                 $interaction->id,
                 $interaction->channel_id,
                 $interaction->user->id,
