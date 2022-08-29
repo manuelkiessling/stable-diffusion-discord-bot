@@ -85,8 +85,9 @@ class Runbot extends Command
             );
             $prompt = trim($prompt);
 
-            if (is_null($interaction->data->options['seed']['value']))
-            {
+            if (   is_null($interaction->data->options['seed'])
+                || is_null($interaction->data->options['seed']['value'])
+            ) {
                 $seed = 42;
             } else {
                 $seed = (int)$interaction->data->options['seed']['value'];
