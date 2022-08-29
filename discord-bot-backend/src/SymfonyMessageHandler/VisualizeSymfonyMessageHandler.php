@@ -41,7 +41,7 @@ class VisualizeSymfonyMessageHandler
                         ->addEmbed(
                             new Embed($discord, [
                                 'title' => "Your visualization has been finished",
-                                'description' => "Your prompt was `{$symfonyMessage->getPrompt()}`.",
+                                'description' => "Your prompt was\n`{$symfonyMessage->getPrompt()}`.",
                                 'type' => Embed::TYPE_RICH,
                                 'color' => '0x5b001e'
                             ]),
