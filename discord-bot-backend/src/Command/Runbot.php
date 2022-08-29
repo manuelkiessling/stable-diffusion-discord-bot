@@ -75,7 +75,7 @@ class Runbot extends Command
             print_r($interaction);
 
             $prompt = preg_replace(
-                "/[^A-Za-z0-9,.\-:;! ]/",
+                "/[^A-Za-z0-9,.\-:!' ]/",
                 ' ',
                 $interaction->data->options['prompt']['value']
             );
