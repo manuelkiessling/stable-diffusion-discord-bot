@@ -6,15 +6,28 @@ class VisualizeSymfonyMessage
 {
     private string $prompt;
 
-    private string $discordMessageId;
+    private string $discordInteractionId;
 
     private string $discordChannelId;
 
-    public function __construct(string $prompt, string $discordMessageId, string $discordChannelId)
+    private string $discordUserId;
+
+    private string $discordUserUsername;
+
+    public function __construct(
+        string $prompt,
+        string $discordInteractionId,
+        string $discordChannelId,
+        string $discordUserId,
+        string $discordUserUsername,
+    )
     {
         $this->prompt = $prompt;
-        $this->discordMessageId = $discordMessageId;
+        $this->discordInteractionId = $discordInteractionId;
         $this->discordChannelId = $discordChannelId;
+        $this->discordUserId = $discordUserId;
+        $this->discordUserUsername = $discordUserUsername;
+
     }
 
     public function getPrompt(): string
@@ -22,13 +35,23 @@ class VisualizeSymfonyMessage
         return $this->prompt;
     }
 
-    public function getDiscordMessageId(): string
+    public function getDiscordInteractionId(): string
     {
-        return $this->discordMessageId;
+        return $this->discordInteractionId;
     }
 
     public function getDiscordChannelId(): string
     {
         return $this->discordChannelId;
+    }
+
+    public function getDiscordUserId(): string
+    {
+        return $this->discordUserId;
+    }
+
+    public function getDiscordUserUsername(): string
+    {
+        return $this->discordUserUsername;
     }
 }

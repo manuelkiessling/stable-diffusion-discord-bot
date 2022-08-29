@@ -3,10 +3,16 @@
 namespace App\Command;
 
 use App\SymfonyMessage\VisualizeSymfonyMessage;
+use Discord\Builders\MessageBuilder;
+use Discord\Discord;
 use Discord\DiscordCommandClient;
 use Discord\Parts\Channel\Message;
+use Discord\Parts\Embed\Embed;
+use Discord\Parts\Embed\Footer;
+use Discord\Parts\Interactions\Command\Command as DiscordCommand;
+use Discord\Parts\Interactions\Command\Option;
+use Discord\Parts\Interactions\Interaction;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\Entity;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,15 +35,59 @@ class Runbot extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $discord = new DiscordCommandClient([
+        $discord = new Discord([
             'token' => 'MTAxMzM3MzA0MzYyNTcwNTUxMw.Gy5jK6.ApVUkSGi9Y51z3cne5BV-sgLOoXuSFpb388FY0',
         ]);
 
-        $discord->registerCommand('visualize', function (Message $message, array $params) {
-            $prompt = implode(' ', $params);
-            $prompt = preg_replace("/[^A-Za-z0-9,.\-: ]/", '', $prompt);
+        /*
+        $discord->on('ready', function (Discord $discord) {
+            $command = new DiscordCommand(
+                $discord,
+                [
+                    'name' => 'draw',
+                    'description' => 'Will generate an image for the given text prompt using the Stable Diffusion Text2Image AI.',
+                    'type' => DiscordCommand::CHAT_INPUT,
+                    'options' => [
+                        [
+                            'name' => 'prompt',
+                            'description' => 'The text prompt from to generate the image. Try "An astronaut riding a horse".',
+                            'type' => Option::STRING,
+                            'required' => true,
+                            'min_length' => 10,
+                            'max_length' => 500
+                        ]
+                    ],
+                ]
+            );
+            $promise = $discord->application->commands->save($command);
 
-            $this->messageBus->dispatch(new VisualizeSymfonyMessage($prompt, $message->id, $message->channel_id));
+            $promise->done(function () {
+                echo "saved";
+            });
+
+        });
+
+        $discord->run();
+        */
+
+
+        $discord->listenCommand('draw', function (Interaction $interaction) use ($discord) {
+            print_r($interaction);
+
+            $prompt = preg_replace(
+                "/[^A-Za-z0-9,.\-:; ]/",
+                ' ',
+                $interaction->data->options['prompt']['value']
+            );
+            $prompt = trim($prompt);
+
+            $this->messageBus->dispatch(new VisualizeSymfonyMessage(
+                $prompt,
+                $interaction->id,
+                $interaction->channel_id,
+                $interaction->user->id,
+                $interaction->user->username
+            ));
 
             $sql = "
                 SELECT COUNT(*) AS cnt
@@ -52,10 +102,22 @@ class Runbot extends Command
             $waitMin = $numberOfTasks;
             $waitMax = $numberOfTasks * 2;
 
-            return "I have enqueued visualization of prompt '$prompt'.\nThere are currently {$numberOfTasks} visualization tasks in the queue.\nExpect between $waitMin and $waitMax minutes for your visualization to be finished.";
-        }, [
-            'description' => 'Visualize the given prompt using Stable Diffusion.',
-        ]);
+            $interaction->respondWithMessage(
+                MessageBuilder::new()
+                    ->addEmbed(
+                        new Embed($discord, [
+                            'title' => 'Draw task enqueued',
+                            'description' => "I have enqueued visualization of prompt\n`$prompt`.",
+                            'footer' => new Footer(
+                                $discord,
+                                ['text' => "There are currently {$numberOfTasks} visualization tasks in the queue.\nExpect between $waitMin and $waitMax minutes for your visualization to be finished."]
+                            ),
+                            'type' => Embed::TYPE_RICH,
+                            'color' => '0x5b001e'
+                        ])
+                    )
+            );
+        });
 
         $discord->run();
 
