@@ -78,8 +78,6 @@ class Runbot extends Command
         */
 
         $discord->listenCommand('draw', function (Interaction $interaction) use ($discord) {
-            print_r($interaction);
-
             $prompt = preg_replace(
                 "/[^A-Za-z0-9,.\-:!' ]/",
                 ' ',
