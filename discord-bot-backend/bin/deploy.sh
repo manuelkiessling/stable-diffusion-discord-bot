@@ -12,4 +12,4 @@ rsync \
   --exclude public/generated-content/ \
   --delete \
   "$SCRIPT_FOLDER"/../ \
-  ubuntu@3.120.16.214:/home/ubuntu/discord-bot-backend/
+  ubuntu@3.74.47.243:/home/ubuntu/discord-bot-backend/

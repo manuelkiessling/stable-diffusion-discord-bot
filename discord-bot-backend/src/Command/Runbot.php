@@ -102,6 +102,12 @@ class Runbot extends Command
             $waitMin = $numberOfTasks;
             $waitMax = $numberOfTasks * 2;
 
+            if ($numberOfTasks === 1) {
+                $text = "Your task is the first one in the queue.\nExpect between $waitMin and $waitMax minutes for your visualization to be finished.";
+            } else {
+                $text = "Your task is at position {$numberOfTasks} in the queue.\nExpect between $waitMin and $waitMax minutes for your visualization to be finished.";
+            }
+
             $interaction->respondWithMessage(
                 MessageBuilder::new()
                     ->addEmbed(
@@ -110,7 +116,7 @@ class Runbot extends Command
                             'description' => "I have enqueued visualization of prompt\n`$prompt`.",
                             'footer' => new Footer(
                                 $discord,
-                                ['text' => "There are currently {$numberOfTasks} visualization tasks in the queue.\nExpect between $waitMin and $waitMax minutes for your visualization to be finished."]
+                                ['text' => $text]
                             ),
                             'type' => Embed::TYPE_RICH,
                             'color' => '0x5b001e'
