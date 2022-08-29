@@ -33,7 +33,7 @@ class VisualizeSymfonyMessageHandler
         }
 
         if ($symfonyMessage->getFormat() === 'portrait') {
-            $w = 256;
+            $w = 768;
         }
 
         shell_exec("/usr/bin/env bash ~/discord-bot-backend/bin/visualize.sh \"{$symfonyMessage->getPrompt()}\" {$symfonyMessage->getSeed()} $outdirpath $w $h");
