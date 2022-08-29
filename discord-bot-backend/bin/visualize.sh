@@ -25,6 +25,8 @@ python scripts/txt2img.py \
   --ckpt sd-v1-4.ckpt \
   --skip_grid \
   --n_samples 1 \
-  --n_iter 1 \
+  --n_iter 5 \
+  --H 256 \
+  --W 265 \
   --seed "$2" \
   --outdir="/var/tmp/$3"

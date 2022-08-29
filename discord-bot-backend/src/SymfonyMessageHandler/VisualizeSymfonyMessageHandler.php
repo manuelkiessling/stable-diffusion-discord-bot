@@ -47,6 +47,10 @@ class VisualizeSymfonyMessageHandler
                             ]),
                         )
                         ->addFile("/var/tmp/$outdirpath/samples/00000.png")
+                        ->addFile("/var/tmp/$outdirpath/samples/00001.png")
+                        ->addFile("/var/tmp/$outdirpath/samples/00002.png")
+                        ->addFile("/var/tmp/$outdirpath/samples/00003.png")
+                        ->addFile("/var/tmp/$outdirpath/samples/00004.png")
                 );
 
             $promise->then(function () use ($discord) {
