@@ -26,5 +26,7 @@ python scripts/txt2img.py \
   --plms \
   --ckpt sd-v1-4.ckpt \
   --skip_grid \
+  --W "$4" \
+  --H "$5" \
   --n_samples 1 \
-  --n_iter 5
+  --n_iter 4

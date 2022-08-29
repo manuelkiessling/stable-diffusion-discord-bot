@@ -8,6 +8,8 @@ class VisualizeSymfonyMessage
 
     private int $seed;
 
+    private string $format;
+
     private string $discordInteractionId;
 
     private string $discordChannelId;
@@ -19,6 +21,7 @@ class VisualizeSymfonyMessage
     public function __construct(
         string $prompt,
         int $seed,
+        string $format,
         string $discordInteractionId,
         string $discordChannelId,
         string $discordUserId,
@@ -27,6 +30,7 @@ class VisualizeSymfonyMessage
     {
         $this->prompt = $prompt;
         $this->seed = $seed;
+        $this->format = $format;
         $this->discordInteractionId = $discordInteractionId;
         $this->discordChannelId = $discordChannelId;
         $this->discordUserId = $discordUserId;
@@ -42,6 +46,11 @@ class VisualizeSymfonyMessage
     public function getSeed(): int
     {
         return $this->seed;
+    }
+
+    public function getFormat(): string
+    {
+        return $this->format;
     }
 
     public function getDiscordInteractionId(): string

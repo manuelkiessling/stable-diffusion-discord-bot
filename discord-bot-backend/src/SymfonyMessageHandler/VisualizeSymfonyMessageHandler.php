@@ -25,7 +25,18 @@ class VisualizeSymfonyMessageHandler
 
         $outdirpath = 'stable-diffusion-result-' . sha1(rand(0, PHP_INT_MAX));
 
-        shell_exec("/usr/bin/env bash ~/discord-bot-backend/bin/visualize.sh \"{$symfonyMessage->getPrompt()}\" {$symfonyMessage->getSeed()} $outdirpath");
+        $w = 512;
+        $h = 512;
+
+        if ($symfonyMessage->getFormat() === 'landscape') {
+            $h = 256;
+        }
+
+        if ($symfonyMessage->getFormat() === 'portrait') {
+            $w = 256;
+        }
+
+        shell_exec("/usr/bin/env bash ~/discord-bot-backend/bin/visualize.sh \"{$symfonyMessage->getPrompt()}\" {$symfonyMessage->getSeed()} $outdirpath $w $h");
 
         $discord = new Discord([
             'token' => 'MTAxMzM3MzA0MzYyNTcwNTUxMw.Gy5jK6.ApVUkSGi9Y51z3cne5BV-sgLOoXuSFpb388FY0',
@@ -34,24 +45,26 @@ class VisualizeSymfonyMessageHandler
         $discord->on('ready', function (Discord $discord) use ($symfonyMessage, $outdirpath) {
             $this->logger->info('Discord is ready.');
 
-            $promise = $discord->getChannel($symfonyMessage->getDiscordChannelId())
-                ->sendMessage(
-                    MessageBuilder::new()
-                        ->setContent("<@{$symfonyMessage->getDiscordUserId()}>")
-                        ->addEmbed(
-                            new Embed($discord, [
-                                'title' => "Your visualization has been finished",
-                                'description' => "Your prompt was\n`{$symfonyMessage->getPrompt()}`.",
-                                'type' => Embed::TYPE_RICH,
-                                'color' => '0x5b001e'
-                            ]),
-                        )
-                        ->addFile("/var/tmp/$outdirpath/samples/00000.png")
-                        ->addFile("/var/tmp/$outdirpath/samples/00001.png")
-                        ->addFile("/var/tmp/$outdirpath/samples/00002.png")
-                        ->addFile("/var/tmp/$outdirpath/samples/00003.png")
-                        ->addFile("/var/tmp/$outdirpath/samples/00004.png")
+            $messageBuilder = MessageBuilder::new()
+                ->setContent("<@{$symfonyMessage->getDiscordUserId()}>")
+                ->addEmbed(
+                    new Embed($discord, [
+                        'title' => "Your visualization has been finished",
+                        'description' => "Your prompt was\n`{$symfonyMessage->getPrompt()}`.",
+                        'type' => Embed::TYPE_RICH,
+                        'color' => '0x5b001e'
+                    ]),
                 );
+            for ($i = 0; $i < 10; $i++) {
+                if (file_exists("/var/tmp/$outdirpath/samples/0000$i.png")) {
+                    $messageBuilder->addFile("/var/tmp/$outdirpath/samples/0000$i.png");
+                } else {
+                    break;
+                }
+            }
+
+            $promise = $discord->getChannel($symfonyMessage->getDiscordChannelId())
+                ->sendMessage($messageBuilder);
 
             $promise->then(function () use ($discord) {
                 $this->logger->info('Message was sent, closing Discord.');

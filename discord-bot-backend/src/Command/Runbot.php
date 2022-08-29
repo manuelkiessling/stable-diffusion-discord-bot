@@ -7,6 +7,7 @@ use Discord\Builders\MessageBuilder;
 use Discord\Discord;
 use Discord\Parts\Embed\Embed;
 use Discord\Parts\Embed\Footer;
+use Discord\Parts\Interactions\Command\Choice;
 use Discord\Parts\Interactions\Command\Command as DiscordCommand;
 use Discord\Parts\Interactions\Command\Option;
 use Discord\Parts\Interactions\Interaction;
@@ -48,7 +49,7 @@ class Runbot extends Command
                     'options' => [
                         [
                             'name' => 'prompt',
-                            'description' => 'The text prompt from to generate the image. Try "An astronaut riding a horse".',
+                            'description' => 'The text prompt from which to generate the images. Try "An astronaut riding a horse".',
                             'type' => Option::STRING,
                             'required' => true,
                             'min_length' => 10,
@@ -56,11 +57,22 @@ class Runbot extends Command
                         ],
                         [
                             'name' => 'seed',
-                            'description' => 'The seed to use when generating the image. Defaults to 42.',
+                            'description' => 'The seed to use when generating the images. Defaults to 42.',
                             'type' => Option::INTEGER,
                             'required' => false,
                             'min_value' => 0,
                             'max_value' => 999999999
+                        ],
+                        [
+                            'name' => 'format',
+                            'description' => 'Format of the images.',
+                            'type' => Option::STRING,
+                            'required' => false,
+                            'choices' => [
+                                Choice::new($discord, 'Landscape', 'landscape'),
+                                Choice::new($discord, 'Square', 'square'),
+                                Choice::new($discord, 'Portrait', 'portrait')
+                            ]
                         ],
 
                     ],
@@ -78,10 +90,11 @@ class Runbot extends Command
         */
 
         $discord->listenCommand('draw', function (Interaction $interaction) use ($discord) {
+            $prompt = mb_strtolower($interaction->data->options['prompt']['value']);
             $prompt = preg_replace(
-                "/[^A-Za-z0-9,.\-:!' ]/",
+                "/[^A-Za-z0-9,.\-:!šžáâãäåæçèéêëìíîïñòóôõöøùúûüýþßàðÿ' ]/",
                 ' ',
-                $interaction->data->options['prompt']['value']
+                $prompt
             );
             $prompt = trim($prompt);
 
@@ -93,9 +106,18 @@ class Runbot extends Command
                 $seed = (int)$interaction->data->options['seed']['value'];
             }
 
+            if (   is_null($interaction->data->options['format'])
+                || is_null($interaction->data->options['format']['value'])
+            ) {
+                $format = 'square';
+            } else {
+                $format = $interaction->data->options['format']['value'];
+            }
+
             $this->messageBus->dispatch(new VisualizeSymfonyMessage(
                 $prompt,
                 $seed,
+                $format,
                 $interaction->id,
                 $interaction->channel_id,
                 $interaction->user->id,
@@ -126,7 +148,7 @@ class Runbot extends Command
                     ->addEmbed(
                         new Embed($discord, [
                             'title' => 'Draw task enqueued',
-                            'description' => "I have enqueued visualization of prompt\n`$prompt` with seed `$seed`.",
+                            'description' => "I have enqueued visualization of prompt\n`$prompt` in format `$format` with seed `$seed`.",
                             'footer' => new Footer(
                                 $discord,
                                 ['text' => $text]
