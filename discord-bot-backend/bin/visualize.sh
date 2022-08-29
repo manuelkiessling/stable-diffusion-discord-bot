@@ -21,10 +21,10 @@ conda activate ldm
 
 python scripts/txt2img.py \
   --prompt "$1" \
+  --seed "$2" \
+  --outdir="/var/tmp/$3" \
   --plms \
   --ckpt sd-v1-4.ckpt \
   --skip_grid \
   --n_samples 1 \
-  --n_iter 5 \
-  --seed "$2" \
-  --outdir="/var/tmp/$3"
+  --n_iter 5
