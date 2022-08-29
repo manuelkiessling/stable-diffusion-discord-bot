@@ -126,7 +126,7 @@ class Runbot extends Command
                     ->addEmbed(
                         new Embed($discord, [
                             'title' => 'Draw task enqueued',
-                            'description' => "I have enqueued visualization of prompt\n`$prompt`.",
+                            'description' => "I have enqueued visualization of prompt\n`$prompt` with seed `$seed`.",
                             'footer' => new Footer(
                                 $discord,
                                 ['text' => $text]
