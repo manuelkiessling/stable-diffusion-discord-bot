@@ -26,4 +26,5 @@ python scripts/txt2img.py \
   --skip_grid \
   --n_samples 1 \
   --n_iter 1 \
-  --outdir="/var/tmp/$2"
+  --seed $2 \
+  --outdir="/var/tmp/$3"

@@ -87,9 +87,8 @@ class Runbot extends Command
             );
             $prompt = trim($prompt);
 
-            if (   !array_key_exists('seed', $interaction->data->options->toArray())
-                || !array_key_exists('value', $interaction->data->options['seed'])
-            ) {
+            if (is_null($interaction->data->options['seed']['value']))
+            {
                 $seed = 42;
             } else {
                 $seed = (int)$interaction->data->options['seed']['value'];
