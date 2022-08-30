@@ -23,7 +23,20 @@ This makes sure your kernel can talk to your Nvidia GPU:
     ubuntu-drivers devices
     sudo ubuntu-drivers autoinstall
     sudo reboot
-    nvidia-smi
+
+Running `nvidia-smi` should now look like this:
+
+    +-----------------------------------------------------------------------------+
+    | NVIDIA-SMI 515.65.01    Driver Version: 515.65.01    CUDA Version: 11.7     |
+    |-------------------------------+----------------------+----------------------+
+    | GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+    | Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+    |                               |                      |               MIG M. |
+    |===============================+======================+======================|
+    |   0  Tesla T4            Off  | 00000000:00:1E.0 Off |                    0 |
+    | N/A   58C    P8    18W /  70W |      2MiB / 15360MiB |      0%      Default |
+    |                               |                      |                  N/A |
+    +-------------------------------+----------------------+----------------------+
 
 This sets up the conda environment used by Stable Diffusion:
 
