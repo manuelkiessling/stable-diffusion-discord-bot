@@ -7,9 +7,6 @@ use Discord\Builders\MessageBuilder;
 use Discord\Discord;
 use Discord\Parts\Embed\Embed;
 use Discord\Parts\Embed\Footer;
-use Discord\Parts\Interactions\Command\Choice;
-use Discord\Parts\Interactions\Command\Command as DiscordCommand;
-use Discord\Parts\Interactions\Command\Option;
 use Discord\Parts\Interactions\Interaction;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -18,76 +15,35 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-#[AsCommand(name: 'app:runbot')]
-class Runbot extends Command
+#[AsCommand(name: 'app:bot:run')]
+class BotRun extends Command
 {
+    private string $discordBotToken;
+
     private MessageBusInterface $messageBus;
 
     private EntityManagerInterface $entityManager;
 
-    public function __construct(MessageBusInterface $messageBus, EntityManagerInterface $entityManager)
+    public function __construct(
+        string $discordBotToken,
+        MessageBusInterface $messageBus,
+        EntityManagerInterface $entityManager
+    )
     {
+        $this->discordBotToken = $discordBotToken;
         $this->messageBus = $messageBus;
         $this->entityManager = $entityManager;
         parent::__construct();
     }
 
-    public function execute(InputInterface $input, OutputInterface $output): int
+    public function execute(
+        InputInterface $input,
+        OutputInterface $output
+    ): int
     {
         $discord = new Discord([
-            'token' => 'MTAxMzM3MzA0MzYyNTcwNTUxMw.Gy5jK6.ApVUkSGi9Y51z3cne5BV-sgLOoXuSFpb388FY0',
+            'token' => $this->discordBotToken,
         ]);
-
-        /*
-        $discord->on('ready', function (Discord $discord) {
-            $command = new DiscordCommand(
-                $discord,
-                [
-                    'name' => 'draw',
-                    'description' => 'Will generate an image for the given text prompt using the Stable Diffusion Text2Image AI.',
-                    'type' => DiscordCommand::CHAT_INPUT,
-                    'options' => [
-                        [
-                            'name' => 'prompt',
-                            'description' => 'The text prompt from which to generate the images. Try "An astronaut riding a horse".',
-                            'type' => Option::STRING,
-                            'required' => true,
-                            'min_length' => 10,
-                            'max_length' => 500
-                        ],
-                        [
-                            'name' => 'seed',
-                            'description' => 'The seed to use when generating the images. Defaults to 42.',
-                            'type' => Option::INTEGER,
-                            'required' => false,
-                            'min_value' => 0,
-                            'max_value' => 999999999
-                        ],
-                        [
-                            'name' => 'format',
-                            'description' => 'Format of the images.',
-                            'type' => Option::STRING,
-                            'required' => false,
-                            'choices' => [
-                                Choice::new($discord, 'Landscape', 'landscape'),
-                                Choice::new($discord, 'Square', 'square'),
-                                Choice::new($discord, 'Portrait', 'portrait')
-                            ]
-                        ],
-
-                    ],
-                ]
-            );
-            $promise = $discord->application->commands->save($command);
-
-            $promise->done(function () {
-                echo "saved";
-            });
-
-        });
-
-        $discord->run();
-        */
 
         $discord->listenCommand('draw', function (Interaction $interaction) use ($discord) {
             $prompt = mb_strtolower($interaction->data->options['prompt']['value']);

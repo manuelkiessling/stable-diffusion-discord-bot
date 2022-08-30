@@ -12,10 +12,16 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 #[AsMessageHandler]
 class VisualizeSymfonyMessageHandler
 {
+    private string $discordBotToken;
+
     private LoggerInterface $logger;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(
+        string $discordBotToken,
+        LoggerInterface $logger
+    )
     {
+        $this->discordBotToken = $discordBotToken;
         $this->logger = $logger;
     }
 
@@ -45,7 +51,7 @@ class VisualizeSymfonyMessageHandler
         shell_exec("/usr/bin/env bash ~/discord-bot-backend/bin/visualize.sh \"{$symfonyMessage->getPrompt()}\" {$symfonyMessage->getSeed()} $outdirpath $w $h");
 
         $discord = new Discord([
-            'token' => 'MTAxMzM3MzA0MzYyNTcwNTUxMw.Gy5jK6.ApVUkSGi9Y51z3cne5BV-sgLOoXuSFpb388FY0',
+            'token' => $this->discordBotToken,
         ]);
 
         $discord->on('ready', function (Discord $discord) use ($symfonyMessage, $outdirpath) {
