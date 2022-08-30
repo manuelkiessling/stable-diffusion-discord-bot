@@ -4,16 +4,15 @@ Root account root user: kiessling.manuel+aws-stable-diffusion-root@gmail.com
 
 Ubuntu 22.04:
 
-https://www.linuxcapable.com/how-to-install-nvidia-drivers-on-ubuntu-22-04-lts/
+sudo apt-get update
+sudo apt-get -u dist-upgrade
 
 sudo apt-get install ubuntu-drivers-common libsm6 libxext6 libxrender-dev mariadb-server net-tools php8.1-cli php8.1-xml php8.1-mysql
 
 ubuntu-drivers devices
 sudo ubuntu-drivers autoinstall
-- reboot
-
-sudo apt-get update
-sudo apt-get -u dist-upgrade
+nvidia-smi
+sudo reboot
 
 wget https://repo.anaconda.com/miniconda/Miniconda3-py38_4.12.0-Linux-x86_64.sh
 
@@ -25,6 +24,8 @@ git clone https://github.com/CompVis/stable-diffusion.git
 cd stable-diffusion/
 conda env create -f environment.yaml
 conda activate ldm
+
+- Download https://huggingface.co/CompVis/stable-diffusion-v-1-4-original/resolve/main/sd-v1-4.ckpt and transfer to /home/ubuntu/stable-diffusion
 
 cd discord-bot-backend
 sudo mysql
