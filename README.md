@@ -2,6 +2,8 @@
 
 ## Setup on Ubuntu 22.04
 
+The following setup is known to work on AWS `g4dn.xlarge` instances, which feature a NVIDIA T4 GPU.
+
 This installs the required OS packages:
 
     sudo apt-get update
@@ -18,7 +20,7 @@ This installs the required OS packages:
         php8.1-mysql \
         composer
 
-This makes sure your kernel can talk to your Nvidia GPU:
+This makes sure your kernel can talk to your NVIDIA GPU:
 
     ubuntu-drivers devices
     sudo ubuntu-drivers autoinstall
@@ -90,3 +92,5 @@ And the task consumer in another one:
 Create an invite URL for your bot at [https://discord.com/developers/applications/<your-application's-id>/oauth2/url-generator]. You need scopes `bot` and `application.commands`, and permissions `Send Messages`, `Attach files`, `Read Message History`, and `Read Messages/View Channels`.
 
 You then need to open the generated URL to invite the bot into your Discord server.
+
+Talk to the bot using the `/draw` slash command.
