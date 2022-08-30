@@ -54,7 +54,7 @@ You can now set up Stable Diffusion:
     conda activate ldm
     cd -
 
-Download https://huggingface.co/CompVis/stable-diffusion-v-1-4-original/resolve/main/sd-v1-4.ckpt to `~/stable-diffusion/sd-v1-4.ckpt`.
+Important: Download https://huggingface.co/CompVis/stable-diffusion-v-1-4-original/resolve/main/sd-v1-4.ckpt to `~/stable-diffusion/sd-v1-4.ckpt`.
 
     sudo mysql
         GRANT ALL PRIVILEGES ON discord_bot_backend.* TO 'root'@'localhost' IDENTIFIED BY 'secret' ;
@@ -75,7 +75,7 @@ Start the following command once to have your bot register its `/draw` command w
 
     php bin/console --no-debug app:bot:register
 
-The, run the actual bot command in a separate screen session:
+Then, run the actual bot command in a separate screen session:
 
     screen
         php bin/console --no-debug app:bot:run
