@@ -39,7 +39,7 @@ screen
     CTRL-A D
 
 screen
-    php bin/console app:runbot
+    while true; do php bin/console --no-debug messenger:consume async --memory-limit=2048M --time-limit=600 --limit 1 -vv; done
     CTRL-A D
 
 
