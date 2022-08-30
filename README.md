@@ -1,5 +1,7 @@
 # A Discord Bot providing text2image capabilities using Stable Diffusion
 
+Feel free to sponsor this project at https://patreon.com/manuelkiessling.
+
 ## Setup on Ubuntu 22.04
 
 The following setup is known to work on AWS `g4dn.xlarge` instances, which feature a NVIDIA T4 GPU.
