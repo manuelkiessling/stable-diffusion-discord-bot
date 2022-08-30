@@ -25,6 +25,12 @@ class VisualizeSymfonyMessageHandler
 
         $outdirpath = 'stable-diffusion-result-' . sha1(rand(0, PHP_INT_MAX));
 
+        mkdir("/var/tmp/$outdirpath");
+        file_put_contents(
+            "/var/tmp/$outdirpath/info.txt",
+            "prompt: {$symfonyMessage->getPrompt()}\nseed: {$symfonyMessage->getSeed()}\nformat: {$symfonyMessage->getFormat()}\ndiscordInteractionId: {$symfonyMessage->getDiscordInteractionId()}\ndiscordUserId: {$symfonyMessage->getDiscordUserId()}\ndiscordUserUsername: {$symfonyMessage->getDiscordUserUsername()}\ndiscordChannelId: {$symfonyMessage->getDiscordChannelId()}\n"
+        );
+
         $w = 512;
         $h = 512;
 
