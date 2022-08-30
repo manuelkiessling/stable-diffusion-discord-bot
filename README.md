@@ -1,6 +1,6 @@
 # A Discord Bot providing text2image capabilities using Stable Diffusion
 
-## Setup on Ubuntu 22.04:
+## Setup on Ubuntu 22.04
 
 This installs the required OS packages:
 
