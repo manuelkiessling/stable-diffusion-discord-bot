@@ -44,7 +44,7 @@ This sets up the conda environment used by Stable Diffusion:
     bash Miniconda3-py38_4.12.0-Linux-x86_64.sh
 
 When asked if you want to initialize stuff, answer `yes`.
-Then, log out of your shell session and log back in - shell prompt should now start with `(base)`
+Then, log out of your shell session and log back in - shell prompt should now start with `(base)`.
 
 You can now set up Stable Diffusion:
 
