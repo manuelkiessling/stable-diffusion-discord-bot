@@ -54,7 +54,7 @@ You can now set up Stable Diffusion:
     conda activate ldm
     cd -
 
-Important: Download https://huggingface.co/CompVis/stable-diffusion-v-1-4-original/resolve/main/sd-v1-4.ckpt to `~/stable-diffusion/sd-v1-4.ckpt`.
+Important: Download [https://huggingface.co/CompVis/stable-diffusion-v-1-4-original/resolve/main/sd-v1-4.ckpt] to `~/stable-diffusion/sd-v1-4.ckpt`.
 
     sudo mysql
         GRANT ALL PRIVILEGES ON discord_bot_backend.* TO 'root'@'localhost' IDENTIFIED BY 'secret' ;
@@ -63,9 +63,9 @@ Important: Download https://huggingface.co/CompVis/stable-diffusion-v-1-4-origin
     cd stable-diffusion-discord-bot/discord-bot-backend
     cp .env.local.dist .env.local
 
-Now, set up a new Discord application at https://discord.com/developers/applications.
+Now, set up a new Discord application at [https://discord.com/developers/applications].
 
-Edit file `.env.local` and set your own bot token - generate it at https://discord.com/developers/applications/<your-application's-id>/bot.
+Edit file `.env.local` and set your own bot token - generate it at [https://discord.com/developers/applications/<your-application's-id>/bot].
 
     composer install
     php bin/console --no-debug doctrine:database:create
@@ -87,6 +87,6 @@ And the task consumer in another one:
         while true; do php bin/console --no-debug messenger:consume async --memory-limit=2048M --time-limit=600 --limit 1 -vv; done
         CTRL-A D
 
-Create an invite URL for your bot at https://discord.com/developers/applications/<your-application's-id>/oauth2/url-generator. You need scopes `bot` and `application.commands`, and permissions `Send Messages`, `Attach files`, `Read Message History`, and `Read Messages/View Channels`.
+Create an invite URL for your bot at [https://discord.com/developers/applications/<your-application's-id>/oauth2/url-generator]. You need scopes `bot` and `application.commands`, and permissions `Send Messages`, `Attach files`, `Read Message History`, and `Read Messages/View Channels`.
 
 You then need to open the generated URL to invite the bot into your Discord server.
