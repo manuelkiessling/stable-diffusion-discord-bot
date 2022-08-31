@@ -83,7 +83,9 @@ class BotRun extends Command
             $sql = "
                 SELECT COUNT(*) AS cnt
                 FROM messenger_messages
-                WHERE delivered_at IS NULL;
+                WHERE
+                        delivered_at IS NULL
+                    AND queue_name = 'default';
             ";
 
             $stmt = $this->entityManager->getConnection()->prepare($sql);
