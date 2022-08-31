@@ -88,7 +88,7 @@ Then, run the actual bot command in a separate screen session:
 And the task consumer in another one:
 
     screen
-        while true; do php bin/console --no-debug messenger:consume async --memory-limit=2048M --time-limit=600 --limit 1 -vv; done
+        while true; do php bin/console --no-debug messenger:consume async --memory-limit=2048M --time-limit=240 --limit 1 -vv; done
         CTRL-A D
 
 Create an invite URL for your bot at [https://discord.com/developers/applications/<your-application's-id>/oauth2/url-generator]. You need scopes `bot` and `application.commands`, and permissions `Send Messages`, `Attach files`, `Read Message History`, and `Read Messages/View Channels`.
