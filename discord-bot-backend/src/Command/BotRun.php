@@ -152,7 +152,7 @@ class BotRun extends Command
 
             $prompt = mb_strtolower($interaction->data->options['prompt']['value']);
             $prompt = preg_replace(
-                "/[^A-Za-z0-9,.\-:!šžáâãäåæçèéêëìíîïñòóôõöøùúûüýþßàðÿ' ]/",
+                "/[^A-Za-z0-9,.\-:!šžáâãäåæçèéêëìíîïñòóôõöøùúûüýþßàðÿ ]/",
                 ' ',
                 $prompt
             );
