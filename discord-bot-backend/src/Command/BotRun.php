@@ -94,7 +94,7 @@ class BotRun extends Command
                     $interaction->respondWithMessage((new MessageBuilder())->addEmbed(
                         new Embed($discord, [
                             'title' => 'Your draw status',
-                            'description' => "There are currently $numberOfTasks tasks in the queue.\n\nYou have the following tasks in the queue:\n\n$positionsText",
+                            'description' => "There are currently $numberOfTasks tasks in the queue.\n\nYou have the following tasks in the queue:\n\n$positionsText\n",
                             'footer' => new Footer(
                                 $discord,
                                 ['text' => 'Position 1 means that the task is next in line.']
