@@ -2,6 +2,8 @@
 
 Feel free to sponsor this project at https://patreon.com/manuelkiessling.
 
+Note that for all Stable Diffusion images generated with this project, the [CreativeML Open RAIL-M license](https://github.com/CompVis/stable-diffusion/blob/main/LICENSE) applies.
+
 <img alt="A Discord session with a message exchange between a user and the Stable Diffusion Discord Bot" src="https://github.com/manuelkiessling/stable-diffusion-discord-bot/raw/main/github-assets/screenshot.png?raw=true" width="480">
 
 ## Setup on Ubuntu 22.04
