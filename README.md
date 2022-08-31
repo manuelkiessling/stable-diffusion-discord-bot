@@ -2,6 +2,8 @@
 
 Feel free to sponsor this project at https://patreon.com/manuelkiessling.
 
+![A Discord session with a message exchange between a user and the Stable Diffusion Discord Bot](/github-assets/screenshot.png?raw=true)
+
 ## Setup on Ubuntu 22.04
 
 The following setup is known to work on AWS `g4dn.xlarge` instances, which feature a NVIDIA T4 GPU.
