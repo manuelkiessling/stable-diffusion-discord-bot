@@ -2,7 +2,7 @@
 
 Feel free to sponsor this project at https://patreon.com/manuelkiessling.
 
-We are building a Discord community around this project at https://discord.gg/nsfeutx35z - you can also try the Bot there!
+We are building a Discord community around this project: [![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/nsfeutx35z) - you can also test drive the Bot there!
 
 Note that for all Stable Diffusion images generated with this project, the [CreativeML Open RAIL-M license](https://github.com/CompVis/stable-diffusion/blob/main/LICENSE) applies.
 
