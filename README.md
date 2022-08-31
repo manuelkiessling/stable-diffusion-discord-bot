@@ -1,4 +1,6 @@
-# A Discord Bot providing text2image capabilities using Stable Diffusion
+# Stable Diffusion Discord Bot
+
+## An open source Discord Bot providing text2image capabilities using Stable Diffusion
 
 Feel free to sponsor this project at https://patreon.com/manuelkiessling.
 
@@ -12,7 +14,7 @@ Note that for all Stable Diffusion images generated with this project, the [Crea
 
 <img alt="A Discord session with a message exchange between a user and the Stable Diffusion Discord Bot" src="https://github.com/manuelkiessling/stable-diffusion-discord-bot/raw/main/github-assets/screenshot.png?raw=true" width="480">
 
-## Setup on Ubuntu 22.04
+### Setup on Ubuntu 22.04
 
 The following setup is known to work on AWS `g4dn.xlarge` instances, which feature a NVIDIA T4 GPU.
 
