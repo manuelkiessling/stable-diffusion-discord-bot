@@ -111,7 +111,6 @@ class VisualizeSymfonyMessageHandler
                     } catch (Throwable $throwable) {
                         $this->logger->warning("Got throwable {$throwable->getMessage()}.");
                     }
-                    exit(0);
                 });
             });
 
