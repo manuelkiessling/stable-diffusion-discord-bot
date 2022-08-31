@@ -111,6 +111,45 @@ class BotRun extends Command
         });
 
         $discord->listenCommand('draw', function (Interaction $interaction) use ($discord) {
+
+            $sql = "
+                    SELECT body, headers, created_at
+                    FROM messenger_messages
+                    WHERE queue_name = 'default'
+                    AND delivered_at IS NULL
+                    ORDER BY created_at ASC;
+                ";
+
+            $stmt = $this->entityManager->getConnection()->prepare($sql);
+            $resultSet = $stmt->executeQuery();
+
+            $rows = $resultSet->fetchAllAssociative();
+
+            $numberOfTasksForThisUserId = 0;
+            foreach ($rows as $row) {
+                $envelope = $this->serializer->decode(['body' => $row['body'], 'headers' => $row['headers']]);
+                /** @var VisualizeSymfonyMessage $message */
+                $message = $envelope->getMessage();
+                if ($message->getDiscordUserId() === $interaction->user->id) {
+                    $numberOfTasksForThisUserId++;
+                }
+            }
+
+            if ($numberOfTasksForThisUserId >= 3) {
+                $interaction->respondWithMessage(
+                    MessageBuilder::new()
+                        ->addEmbed(
+                            new Embed($discord, [
+                                'title' => 'Concurrent draw task limit reached',
+                                'description' => "You currently have 3 or more tasks in the queue.\nYou can enqueue another task once you have less than 3 tasks in the queue.\n\nUse `/draw-status` to see the list of your currently enqueued tasks.",
+                                'type' => Embed::TYPE_RICH,
+                                'color' => '0x5b001e'
+                            ])
+                        )
+                );
+                return;
+            }
+
             $prompt = mb_strtolower($interaction->data->options['prompt']['value']);
             $prompt = preg_replace(
                 "/[^A-Za-z0-9,.\-:!šžáâãäåæçèéêëìíîïñòóôõöøùúûüýþßàðÿ' ]/",
