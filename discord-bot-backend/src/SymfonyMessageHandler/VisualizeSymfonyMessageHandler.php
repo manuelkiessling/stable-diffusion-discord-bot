@@ -60,6 +60,14 @@ class VisualizeSymfonyMessageHandler
             $discord->on('ready', function (Discord $discord) use ($symfonyMessage, $outdirpath) {
                 $this->logger->info('Discord is ready.');
 
+                $channel = $discord->getChannel($symfonyMessage->getDiscordChannelId());
+
+                if (is_null($channel)) {
+                    $this->logger->warning("Could not get channel with id '{$symfonyMessage->getDiscordChannelId()}', aborting.");
+                    $discord->close();
+                    throw new UnrecoverableMessageHandlingException("Could not get channel with id '{$symfonyMessage->getDiscordChannelId()}', aborting.");
+                }
+
                 $this->logger->info('Starting to build message.');
                 $messageBuilder = MessageBuilder::new()
                     ->setContent("<@{$symfonyMessage->getDiscordUserId()}>")
@@ -85,8 +93,7 @@ class VisualizeSymfonyMessageHandler
                 $this->logger->info('Finished adding files to message.');
 
                 $this->logger->info('Starting to send message.');
-                $promise = $discord->getChannel($symfonyMessage->getDiscordChannelId())
-                    ->sendMessage($messageBuilder);
+                $promise = $channel->sendMessage($messageBuilder);
 
                 $promise->then(function () use ($discord) {
                     $this->logger->info('Message was sent, closing Discord.');
