@@ -73,7 +73,20 @@ class BotRegister extends Command
             $promise = $discord->application->commands->save($command);
 
             $promise->done(function () use ($discord) {
-                $discord->close();
+
+                $command = new DiscordCommand(
+                    $discord,
+                    [
+                        'name' => 'draw-status',
+                        'description' => 'Show the status of this bot, including the task queue list.',
+                        'type' => DiscordCommand::CHAT_INPUT
+                    ]
+                );
+                $promise = $discord->application->commands->save($command);
+
+                $promise->done(function () use ($discord) {
+                    $discord->close();
+                });
             });
 
         });

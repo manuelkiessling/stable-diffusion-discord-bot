@@ -5,6 +5,7 @@ namespace App\Command;
 use App\SymfonyMessage\VisualizeSymfonyMessage;
 use Discord\Builders\MessageBuilder;
 use Discord\Discord;
+use Discord\Http\Drivers\React;
 use Discord\Parts\Embed\Embed;
 use Discord\Parts\Embed\Footer;
 use Discord\Parts\Interactions\Interaction;
@@ -14,6 +15,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
+use Throwable;
 
 #[AsCommand(name: 'app:bot:run')]
 class BotRun extends Command
@@ -24,15 +27,19 @@ class BotRun extends Command
 
     private EntityManagerInterface $entityManager;
 
+    private SerializerInterface $serializer;
+
     public function __construct(
         string $discordBotToken,
         MessageBusInterface $messageBus,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        SerializerInterface $serializer
     )
     {
         $this->discordBotToken = $discordBotToken;
         $this->messageBus = $messageBus;
         $this->entityManager = $entityManager;
+        $this->serializer = $serializer;
         parent::__construct();
     }
 
@@ -44,6 +51,65 @@ class BotRun extends Command
         $discord = new Discord([
             'token' => $this->discordBotToken,
         ]);
+
+        $discord->listenCommand('draw-status', function (Interaction $interaction) use ($discord, $output) {
+            try {
+
+                $sql = "
+                    SELECT body, headers, created_at
+                    FROM messenger_messages
+                    WHERE queue_name = 'default'
+                    AND delivered_at IS NULL
+                    ORDER BY created_at ASC;
+                ";
+
+                $stmt = $this->entityManager->getConnection()->prepare($sql);
+                $resultSet = $stmt->executeQuery();
+
+                $rows = $resultSet->fetchAllAssociative();
+
+                $numberOfTasks = sizeof($rows);
+                $positions = [];
+                $i = 0;
+                foreach ($rows as $row) {
+                    $envelope = $this->serializer->decode(['body' => $row['body'], 'headers' => $row['headers']]);
+                    /** @var VisualizeSymfonyMessage $message */
+                    $message = $envelope->getMessage();
+                    if ($message->getDiscordUserId() === $interaction->user->id) {
+                        $positions[] = "At position `" . str_pad($i, strlen((string)$numberOfTasks), ' ', STR_PAD_LEFT) . "`, from `{$row['created_at']}` UTC";
+                    }
+                    $i++;
+                }
+
+                if (sizeof($positions) === 0) {
+                    $interaction->respondWithMessage((new MessageBuilder())->addEmbed(
+                        new Embed($discord, [
+                            'title' => 'Your draw status',
+                            'description' => "There are currently **$numberOfTasks** tasks in the queue.\n\nYou do not have any tasks in the queue.",
+                            'type' => Embed::TYPE_RICH,
+                            'color' => '0x5b001e'
+                        ])
+                    ));
+                } else {
+                    $positionsText = implode("\n", $positions);
+                    $interaction->respondWithMessage((new MessageBuilder())->addEmbed(
+                        new Embed($discord, [
+                            'title' => 'Your draw status',
+                            'description' => "There are currently $numberOfTasks tasks in the queue.\n\nYou have the following tasks in the queue:\n\n$positionsText",
+                            'footer' => new Footer(
+                                $discord,
+                                ['text' => 'Position 0 means that the task is next in line.']
+                            ),
+                            'type' => Embed::TYPE_RICH,
+                            'color' => '0x5b001e'
+                        ])
+                    ));
+                }
+            } catch (Throwable $throwable) {
+                $output->writeln("Got throwable with message '{$throwable->getMessage()}'.");
+            }
+
+        });
 
         $discord->listenCommand('draw', function (Interaction $interaction) use ($discord) {
             $prompt = mb_strtolower($interaction->data->options['prompt']['value']);
