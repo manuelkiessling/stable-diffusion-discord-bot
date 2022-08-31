@@ -8,6 +8,7 @@ use Discord\Discord;
 use Discord\Parts\Embed\Embed;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Throwable;
 
 #[AsMessageHandler]
 class VisualizeSymfonyMessageHandler
@@ -57,6 +58,7 @@ class VisualizeSymfonyMessageHandler
         $discord->on('ready', function (Discord $discord) use ($symfonyMessage, $outdirpath) {
             $this->logger->info('Discord is ready.');
 
+            $this->logger->info('Starting to build message.');
             $messageBuilder = MessageBuilder::new()
                 ->setContent("<@{$symfonyMessage->getDiscordUserId()}>")
                 ->addEmbed(
@@ -67,14 +69,20 @@ class VisualizeSymfonyMessageHandler
                         'color' => '0x5b001e'
                     ]),
                 );
+            $this->logger->info('Finished building message.');
+
+            $this->logger->info('Starting to add files to message.');
             for ($i = 0; $i < 10; $i++) {
                 if (file_exists("/var/tmp/$outdirpath/samples/0000$i.png")) {
                     $messageBuilder->addFile("/var/tmp/$outdirpath/samples/0000$i.png");
+                    $this->logger->info("Added file /var/tmp/$outdirpath/samples/0000$i.png to message.");
                 } else {
                     break;
                 }
             }
+            $this->logger->info('Finished adding files to message.');
 
+            $this->logger->info('Starting to send message.');
             $promise = $discord->getChannel($symfonyMessage->getDiscordChannelId())
                 ->sendMessage($messageBuilder);
 
@@ -83,6 +91,19 @@ class VisualizeSymfonyMessageHandler
                 $discord->close();
             });
 
+            $promise->otherwise(function () use ($discord) {
+                $this->logger->info('Message could not be sent, closing Discord.');
+                $discord->close();
+            });
+
+            $promise->always(function () use ($discord) {
+                try {
+                    $discord->close();
+                } catch (Throwable $throwable) {
+                    $this->logger->warning("Got throwable {$throwable->getMessage()}.");
+                }
+                exit(0);
+            });
         });
 
         $discord->run();
