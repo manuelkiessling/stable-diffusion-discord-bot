@@ -5,7 +5,6 @@ namespace App\Command;
 use App\SymfonyMessage\VisualizeSymfonyMessage;
 use Discord\Builders\MessageBuilder;
 use Discord\Discord;
-use Discord\Http\Drivers\React;
 use Discord\Parts\Embed\Embed;
 use Discord\Parts\Embed\Footer;
 use Discord\Parts\Interactions\Interaction;
