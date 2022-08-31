@@ -69,7 +69,7 @@ class BotRun extends Command
 
                 $numberOfTasks = sizeof($rows);
                 $positions = [];
-                $i = 0;
+                $i = 1;
                 foreach ($rows as $row) {
                     $envelope = $this->serializer->decode(['body' => $row['body'], 'headers' => $row['headers']]);
                     /** @var VisualizeSymfonyMessage $message */
@@ -97,7 +97,7 @@ class BotRun extends Command
                             'description' => "There are currently $numberOfTasks tasks in the queue.\n\nYou have the following tasks in the queue:\n\n$positionsText",
                             'footer' => new Footer(
                                 $discord,
-                                ['text' => 'Position 0 means that the task is next in line.']
+                                ['text' => 'Position 1 means that the task is next in line.']
                             ),
                             'type' => Embed::TYPE_RICH,
                             'color' => '0x5b001e'
