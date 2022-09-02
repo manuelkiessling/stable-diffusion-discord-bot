@@ -64,20 +64,8 @@ class BotRun extends Command
             'token' => $this->discordBotToken,
         ]);
 
-        $discord->listenCommand('draw-status', function (Interaction $interaction) use ($discord, $output, $maintenanceMode) {
+        $discord->listenCommand('draw-status', function (Interaction $interaction) use ($discord, $output) {
             try {
-
-                if ($maintenanceMode) {
-                    $interaction->respondWithMessage((new MessageBuilder())->addEmbed(
-                        new Embed($discord, [
-                            'title' => "Sorry, we're closed!",
-                            'description' => "Right now I'm not able to take on any tasks because my owner is too stingy to further pay for the required GPU power.\n\nFeel free to join my home server at https://discord.gg/nsfeutx35z to complain.\n",
-                            'type' => Embed::TYPE_RICH,
-                            'color' => '0x5b001e'
-                        ])
-                    ));
-                    return;
-                }
 
                 $sql = "
                     SELECT body, headers, created_at
@@ -135,7 +123,19 @@ class BotRun extends Command
 
         });
 
-        $discord->listenCommand('draw', function (Interaction $interaction) use ($discord) {
+        $discord->listenCommand('draw', function (Interaction $interaction) use ($discord, $maintenanceMode) {
+
+            if ($maintenanceMode) {
+                $interaction->respondWithMessage((new MessageBuilder())->addEmbed(
+                    new Embed($discord, [
+                        'title' => "Sorry, we're closed!",
+                        'description' => "Right now I'm not able to take on any tasks because my owner is too stingy to further pay for the required GPU power.\n\nFeel free to join my home server at https://discord.gg/nsfeutx35z to complain.\n",
+                        'type' => Embed::TYPE_RICH,
+                        'color' => '0x5b001e'
+                    ])
+                ));
+                return;
+            }
 
             $sql = "
                     SELECT body, headers, created_at
