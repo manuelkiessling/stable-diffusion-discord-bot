@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
@@ -42,17 +43,41 @@ class BotRun extends Command
         parent::__construct();
     }
 
+    public function configure()
+    {
+        $this->addOption(
+            'maintenance-mode',
+            'm',
+            InputOption::VALUE_NONE
+        );
+        parent::configure();
+    }
+
     public function execute(
         InputInterface $input,
         OutputInterface $output
     ): int
     {
+        $maintenanceMode = (bool)$input->getOption('maintenance-mode');
+
         $discord = new Discord([
             'token' => $this->discordBotToken,
         ]);
 
-        $discord->listenCommand('draw-status', function (Interaction $interaction) use ($discord, $output) {
+        $discord->listenCommand('draw-status', function (Interaction $interaction) use ($discord, $output, $maintenanceMode) {
             try {
+
+                if ($maintenanceMode) {
+                    $interaction->respondWithMessage((new MessageBuilder())->addEmbed(
+                        new Embed($discord, [
+                            'title' => "Sorry, we're closed!",
+                            'description' => "Right now I'm not able to take on any tasks because my owner is too stingy to further pay for the required GPU power.\n\nFeel free to join my home server at https://discord.gg/nsfeutx35z to complain.\n",
+                            'type' => Embed::TYPE_RICH,
+                            'color' => '0x5b001e'
+                        ])
+                    ));
+                    return;
+                }
 
                 $sql = "
                     SELECT body, headers, created_at
