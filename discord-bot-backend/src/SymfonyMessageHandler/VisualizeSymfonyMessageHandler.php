@@ -51,7 +51,7 @@ class VisualizeSymfonyMessageHandler
                 $w = 768;
             }
 
-            shell_exec("/usr/bin/env bash ~/discord-bot-backend/bin/visualize.sh \"{$symfonyMessage->getPrompt()}\" {$symfonyMessage->getSeed()} $outdirpath $w $h");
+            shell_exec("/usr/bin/env bash " . __DIR__ . "/../../bin/visualize.sh \"{$symfonyMessage->getPrompt()}\" {$symfonyMessage->getSeed()} $outdirpath $w $h");
 
             $discord = new Discord([
                 'token' => $this->discordBotToken,
