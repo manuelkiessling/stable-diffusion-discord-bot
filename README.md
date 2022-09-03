@@ -87,14 +87,14 @@ Edit file `.env.local` and set your own bot token - generate it at [https://disc
     php bin/console --no-debug doctrine:database:create
     php bin/console --no-debug doctrine:migrations:migrate
 
-Start the following command once to have your bot register its `/draw` command with Discord:
+Start the following command once, to have your bot register its commands with Discord:
 
     php bin/console --no-debug app:bot:register
 
 Then, run the actual bot command in a separate screen session:
 
     screen
-        php bin/console --no-debug app:bot:run
+        while true; do php bin/console --no-debug app:bot:run; done
         CTRL-A D
 
 And the task consumer in another one:
